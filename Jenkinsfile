@@ -8,6 +8,8 @@ pipeline {
   }
 
   environment {
+    // Jenkins launched as a macOS app/service often has no Homebrew or Docker Desktop on PATH.
+    PATH = "/opt/homebrew/bin:/usr/local/bin:/Applications/Docker.app/Contents/Resources/bin:${env.PATH}"
     TEST_COMPOSE = 'docker compose -p stock-ci -f docker-compose.test.yml'
     DEPLOY_COMPOSE = 'docker compose -p stock-cd -f docker-compose.yml'
   }
