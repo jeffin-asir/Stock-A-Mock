@@ -2,6 +2,8 @@ from selenium.webdriver.common.by import By
 
 
 def test_login_form_accepts_input(driver, base_url):
+    driver.get(base_url + "/")
+    driver.execute_script("window.localStorage.removeItem('token');")
     driver.get(base_url + "/login")
     email = driver.find_element(By.ID, "username")
     password = driver.find_element(By.ID, "password")

@@ -23,11 +23,7 @@
   .title {
     font-size: 4rem;
     font-weight: bold;
-    background: linear-gradient(to right, #f7971e, #ffd200); /* golden orange gradient */
-    background-clip: text;
-    -webkit-background-clip: text;
-    color: transparent;
-    -webkit-text-fill-color: transparent;
+    color: #ffd200;
     margin-bottom: 0.5rem;
   }
 
@@ -81,6 +77,6 @@
   }
   
   @keyframes fadeIn {
-    from { opacity: 0; transform: translateY(20px); }
-    to { opacity: 1; transform: translateY(0); }
+    from { transform: translateY(20px); }
+    to { transform: translateY(0); }
   }

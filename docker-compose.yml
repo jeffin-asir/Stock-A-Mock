@@ -19,6 +19,20 @@ services:
       - mock-api
     restart: unless-stopped
 
+  oracle-xe:
+    image: gvenzl/oracle-xe:21-slim
+    platform: linux/amd64
+    container_name: oracle-xe
+    ports:
+      - "1521:1521"
+    environment:
+      ORACLE_PASSWORD: SqlPlusDB
+    volumes:
+      - oracle-xe-data:/opt/oracle/oradata
+    restart: unless-stopped
+    profiles:
+      - oracle
+
   backend:
     build:
       context: ./Backend
@@ -30,5 +44,12 @@ services:
         required: false
     environment:
       CORS_ORIGINS: http://localhost:3000,http://localhost:5173
+      DB_CONNECTION_STRING: oracle-xe:1521/XEPDB1
+    depends_on:
+      - oracle-xe
     profiles:
       - oracle
+
+volumes:
+  oracle-xe-data:
+    external: true

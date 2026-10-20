@@ -22,16 +22,41 @@ const allowedOrigins = process.env.CORS_ORIGINS
   ? process.env.CORS_ORIGINS.split(",").map((origin) => origin.trim())
   : defaultOrigins;
 
+const isPrivateIPv4 = (hostname) => {
+  const octets = hostname.split(".").map(Number);
+  if (octets.length !== 4 || octets.some((octet) => !Number.isInteger(octet) || octet < 0 || octet > 255)) {
+    return false;
+  }
+
+  return octets[0] === 10 ||
+    (octets[0] === 172 && octets[1] >= 16 && octets[1] <= 31) ||
+    (octets[0] === 192 && octets[1] === 168);
+};
+
+const isLocalDevelopmentOrigin = (origin) => {
+  if (!origin) return false;
+
+  try {
+    const { hostname, protocol } = new URL(origin);
+    const isHttpOrigin = ["http:", "https:"].includes(protocol);
+    const isLoopback = ["localhost", "127.0.0.1", "[::1]"].includes(hostname);
+    const isPrivateNetwork = process.env.NODE_ENV !== "production" &&
+      (isPrivateIPv4(hostname) || hostname.endsWith(".local"));
+
+    return isHttpOrigin && (isLoopback || isPrivateNetwork);
+  } catch {
+    return false;
+  }
+};
+
 app.use(cors({
-  origin : (origin, callback) => {
-    if(!origin || allowedOrigins.includes(origin)){
+  origin: (origin, callback) => {
+    if (!origin || allowedOrigins.includes(origin) || isLocalDevelopmentOrigin(origin)) {
       callback(null, true);
     }
-    else{
-      callback(new Error("Not Allowed by CORS."));
-    }
+    else callback(new Error("Not allowed by CORS."));
   },
-  credentials: true, 
+  credentials: true,
 }));
 
 app.use(express.json());
