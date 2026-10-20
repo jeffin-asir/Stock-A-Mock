@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import "./signup.css";
+import { API_BASE } from "../../config";
 
 function Signup() {
   const navigate = useNavigate();
@@ -128,7 +129,7 @@ function Signup() {
     
     console.log("checking email exist or not");
     const res = await fetch(
-      "http://localhost:5001/api/user/check",
+      `${API_BASE}/api/user/check`,
       {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -150,7 +151,7 @@ function Signup() {
   return (
     <div className="page-body">
       <div className="signup-box">
-        <div className="new-account">Create New Account</div>
+        <div className="new-account" data-testid="signup-heading">Create New Account</div>
 
         <div className="user-input-box">
         <div className="name-box">

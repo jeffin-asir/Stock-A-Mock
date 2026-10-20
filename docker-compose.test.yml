@@ -1,0 +1,44 @@
+services:
+  mock-api:
+    build:
+      context: ./tests/mock-api
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "node",
+          "-e",
+          "require('http').get('http://127.0.0.1:5001/health',r=>process.exit(r.statusCode===200?0:1)).on('error',()=>process.exit(1))",
+        ]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+  frontend:
+    build:
+      context: ./Frontend
+      args:
+        VITE_API_URL: http://mock-api:5001
+    depends_on:
+      mock-api:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://127.0.0.1/"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+  selenium-tests:
+    build:
+      context: ./tests
+    environment:
+      BASE_URL: http://frontend
+      CHROME_BIN: /usr/bin/chromium
+      CHROMEDRIVER_PATH: /usr/bin/chromedriver
+    volumes:
+      - ./reports:/reports
+    depends_on:
+      frontend:
+        condition: service_healthy
+      mock-api:
+        condition: service_healthy

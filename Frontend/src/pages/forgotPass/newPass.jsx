@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate, useLocation } from 'react-router-dom';
 import "./newPass.css";
+import { API_BASE } from "../../config";
 
 function newPass() {
   const navigate = useNavigate();
@@ -58,7 +59,7 @@ useEffect(() => {
     setError("");
 
     try {
-      const res = await fetch("http://localhost:5001/api/user/updatePass", {
+      const res = await fetch(`${API_BASE}/api/user/updatePass`, {
         method: "POST",
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email: email, newPassword: password }),

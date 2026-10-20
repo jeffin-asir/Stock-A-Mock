@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import './stocks.css'; // Reusing the same CSS for UI consistency
+import { API_BASE } from '../../config';
 
 const Stocks = () => {
   const [stocks, setStocks] = useState([]);
@@ -17,7 +18,7 @@ const Stocks = () => {
   useEffect(() => {
     const fetchAccount = async () => {
       try {
-        const res = await axios.get('http://localhost:5001/api/demat/me', {
+        const res = await axios.get(`${API_BASE}/api/demat/me`, {
           headers: { Authorization: `Bearer ${token}` },
         });
         setAccountId(res.data.accounts[0][0]);
@@ -28,7 +29,7 @@ const Stocks = () => {
 
     const fetchStocks = async () => {
       try {
-        const res = await axios.get('http://localhost:5001/api/stock');
+        const res = await axios.get(`${API_BASE}/api/stock`);
         const stockList = res.data.stocks.map(row => ({
           ID: row[0],
           SYMBOL: row[1],
@@ -52,7 +53,7 @@ const Stocks = () => {
     if (qty <= 0) return alert('Enter a valid quantity');
 
     try {
-      await axios.post('http://localhost:5001/api/transaction/buy', {
+      await axios.post(`${API_BASE}/api/transaction/buy`, {
         account_id: accountId,
         stock_id: stock.ID,
         symbol: stock.SYMBOL,
@@ -92,11 +93,12 @@ const Stocks = () => {
         onChange={handleSearch}
         placeholder="Search stock symbol..."
         className="search-bar"
+        data-testid="stock-search"
       />
 
       <div className="stock-list">
         {filteredStocks.map((stock) => (
-          <div key={stock.ID} className="stock-card">
+          <div key={stock.ID} className="stock-card" data-testid={`stock-card-${stock.SYMBOL}`}>
             <h3>{stock.SYMBOL}</h3>
             <p>Current Price: ${stock.CURRENT_PRICE}</p>
             <input

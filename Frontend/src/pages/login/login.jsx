@@ -1,6 +1,7 @@
 import './login.css';
 import { useNavigate } from 'react-router-dom';
 import {useState, useEffect} from 'react';
+import { API_BASE } from '../../config';
 
 function Login(){
   const navigate = useNavigate();
@@ -14,7 +15,7 @@ function Login(){
   useEffect(() => {
     const token = localStorage.getItem('token');
     if (token) {
-      fetch('http://localhost:5001/api/demat/me', {
+      fetch(`${API_BASE}/api/demat/me`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -38,7 +39,7 @@ function Login(){
     }
   
     try {
-      const res = await fetch("http://localhost:5001/api/user/login", {
+      const res = await fetch(`${API_BASE}/api/user/login`, {
         method: "POST",
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email: email, password: password }),
@@ -108,7 +109,7 @@ function Login(){
   
   async function checkEmailExists(email) {
     try {
-      const res = await fetch('http://localhost:5001/api/user/check', {
+      const res = await fetch(`${API_BASE}/api/user/check`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email }),
@@ -139,7 +140,7 @@ function Login(){
        
       <div className="login-box">
 
-        <div className="heading">Log In</div>
+        <div className="heading" data-testid="login-heading">Log In</div>
 
         <div className="credentials-input-box">
 
@@ -168,7 +169,7 @@ function Login(){
         <div className="forgot-password"><a onClick={handleForgot}>Forgot Password?</a></div>
 
         <div className="log-in">
-          <button onClick={handleLogIn}  className="login-button" >log in</button>
+          <button onClick={handleLogIn}  className="login-button" data-testid="login-submit">log in</button>
           <p>Don&apos;t have an account? <span className="signup" ><a onClick={handleSignUp}>Sign Up</a></span></p>
         </div>
 

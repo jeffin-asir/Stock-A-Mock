@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import "./portfolio.css";
+import { API_BASE } from '../../config';
 
 const Dashboard = () => {
   const [portfolio, setPortfolio] = useState(null);
@@ -13,7 +14,7 @@ const Dashboard = () => {
     const fetchPortfolio = async () => {
       try {
         const token = localStorage.getItem('token');
-        const res = await axios.get('http://localhost:5001/api/portfolio', {
+        const res = await axios.get(`${API_BASE}/api/portfolio`, {
           headers: {
             Authorization: `Bearer ${token}`,
           },

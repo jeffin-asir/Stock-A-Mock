@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import './account.css'
+import { API_BASE } from '../../config';
 
 function Account() {
   const [account, setAccount] = useState(null);
@@ -16,7 +17,7 @@ function Account() {
     setLoading(true);
     try {
       const token = localStorage.getItem('token');
-      const res = await axios.get('http://localhost:5001/api/demat/me', {
+      const res = await axios.get(`${API_BASE}/api/demat/me`, {
         headers: { Authorization: `Bearer ${token}` }
       });
       if (res.data.accounts.length > 0) {
@@ -37,7 +38,7 @@ function Account() {
     setError('');
     try {
       const token = localStorage.getItem('token');
-      await axios.post('http://localhost:5001/api/demat/create', {}, {
+      await axios.post(`${API_BASE}/api/demat/create`, {}, {
         headers: { Authorization: `Bearer ${token}` }
       });
       fetchAccount();

@@ -8,13 +8,18 @@ const app = express();
 const db = require('./connection/db'); // Import your DB module
 const port = 5001;
 
-const allowedOrigins = [
-  "http://localhost:5173", 
+const defaultOrigins = [
+  "http://localhost:5173",
+  "http://localhost:8080",
   "http://10.7.103.226:5173",
   "http://10.5.12.254:5173",
   "http://192.168.1.200:5173",
-  "http://10.21.68.19:5173"     //library
+  "http://10.21.68.19:5173"
 ];
+
+const allowedOrigins = process.env.CORS_ORIGINS
+  ? process.env.CORS_ORIGINS.split(",").map((origin) => origin.trim())
+  : defaultOrigins;
 
 app.use(cors({
   origin : (origin, callback) => {
@@ -38,6 +43,10 @@ const transactionRoutes = require('./routes/transaction');
 const portfolioRoutes = require('./routes/portfolio'); 
 
 require('./jobs/stockUpdater');
+
+app.get('/health', (req, res) => {
+  res.json({ status: 'ok', service: 'stock-a-mock-backend' });
+});
 
 app.use('/api/user', userRoutes);
 app.use('/api/mail', mailRoutes);

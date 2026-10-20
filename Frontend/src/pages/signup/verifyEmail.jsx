@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useLocation } from "react-router-dom";
 import "./verifyEmail.css";
+import { API_BASE } from "../../config";
 
 function VerifyEmail() {
   const navigate = useNavigate();
@@ -93,7 +94,7 @@ function VerifyEmail() {
 
     try {
       console.log("verify email request");      
-      const res = await fetch("http://localhost:5001/api/mail/signupEmail", {
+      const res = await fetch(`${API_BASE}/api/mail/signupEmail`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ recepient_email: email, OTP: otp }),
@@ -111,7 +112,7 @@ function VerifyEmail() {
     const enteredOtp = otp.join("");
 
     if (enteredOtp == generatedOtp) {
-      const result = await fetch("http://localhost:5001/api/user/register", {
+      const result = await fetch(`${API_BASE}/api/user/register`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ username: name, email: email, password: password }),

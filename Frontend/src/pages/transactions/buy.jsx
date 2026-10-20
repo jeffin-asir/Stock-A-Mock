@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import './buy.css';
+import { API_BASE } from '../../config';
 
 const Buy = () => {
   const [owned, setOwned] = useState([]);
@@ -17,7 +18,7 @@ const Buy = () => {
   useEffect(() => {
     const fetchAcc = async () => {
       try {
-        const res = await axios.get('http://localhost:5001/api/demat/me', {
+        const res = await axios.get(`${API_BASE}/api/demat/me`, {
           headers: { Authorization: `Bearer ${token}` },
         });
         setAccountId(res.data.accounts[0][0]);
@@ -31,7 +32,7 @@ const Buy = () => {
   useEffect(() => {
     const fetchPortfolio = async () => {
       try {
-        const res = await axios.get('http://localhost:5001/api/portfolio', {
+        const res = await axios.get(`${API_BASE}/api/portfolio`, {
           headers: { Authorization: `Bearer ${token}` },
         });
         const holdings = res.data.holdings || [];
@@ -50,7 +51,7 @@ const Buy = () => {
     if (qty <= 0) return alert('Enter a valid quantity');
 
     try {
-      await axios.post('http://localhost:5001/api/transaction/buy', {
+      await axios.post(`${API_BASE}/api/transaction/buy`, {
         account_id: accountId,
         stock_id: stock.stock_id,
         symbol: stock.symbol,

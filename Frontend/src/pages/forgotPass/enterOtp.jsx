@@ -1,7 +1,8 @@
 import React,{useState,useEffect} from 'react';
 import {useNavigate} from 'react-router-dom';
 import { useLocation } from 'react-router-dom';
-import './enterOTP.css';
+import './enterOtp.css';
+import { API_BASE } from '../../config';
 
 function enterOTP(){
 
@@ -91,7 +92,7 @@ function enterOTP(){
       console.log("Generating OTP for email:", email);
 
       try {
-        const res = await fetch('http://localhost:5001/api/mail/signupEmail',{
+        const res = await fetch(`${API_BASE}/api/mail/signupEmail`,{
           method: 'POST',
           headers: { 'Content-Type' : 'application/json' },
           body: JSON.stringify({ recepient_email: email, OTP: otp }),
