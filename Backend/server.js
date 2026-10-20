@@ -10,6 +10,7 @@ const port = 5001;
 
 const defaultOrigins = [
   "http://localhost:5173",
+  "http://localhost:3000",
   "http://localhost:8080",
   "http://10.7.103.226:5173",
   "http://10.5.12.254:5173",

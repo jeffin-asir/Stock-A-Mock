@@ -24,7 +24,7 @@ Developer  →  GitHub (branch / PR)  →  Jenkins
 | Backend | Node.js + Express + Oracle DB |
 | Tests | Python, pytest, Selenium WebDriver (headless Chrome) |
 | CI/CD | Jenkins declarative pipeline (`Jenkinsfile`) |
-| Deploy | Docker Compose on port `8080` |
+| Deploy | Docker Compose on port `3000` |
 
 Local development (without Docker):
 
@@ -66,7 +66,7 @@ After tests pass on `main` / `master`, Jenkins runs:
 docker compose -p stock-cd -f docker-compose.yml up -d --build
 ```
 
-Open http://localhost:8080
+Open http://localhost:3000
 
 This deploy uses a mock stock API on port `5001` so the demo works without Oracle. To start the real backend as well (Oracle required):
 
@@ -76,11 +76,12 @@ docker compose --profile oracle up -d --build
 
 ## Jenkins setup
 
-1. Install Jenkins and the plugins: **Git**, **GitHub**, **Pipeline**, **JUnit**.
-2. Give the Jenkins user permission to run Docker (`docker` group, or mount `/var/run/docker.sock` if Jenkins is in a container).
-3. Create a **Multibranch Pipeline** job pointing at this GitHub repository. Jenkins will pick up the root `Jenkinsfile`.
-4. Add a GitHub webhook: `http://<jenkins-host>:8080/github-webhook/` with events **push** and **pull request**.
-5. Use feature branches and Pull Requests. Jenkins validates the PR. Merge to `main` only after the build is green. Deployment runs on `main` / `master` only.
+1. Use the Jenkins already running at **http://localhost:8080**. Jenkins itself does not need to run in Docker.
+2. Install plugins if missing: **Git**, **GitHub**, **GitHub Branch Source**, **Pipeline**, **JUnit**.
+3. The pipeline uses `docker compose` to build, test, and deploy the app, so the OS user that runs Jenkins must be able to run `docker` (on macOS, Docker Desktop running is enough for a typical local Jenkins).
+4. Create a **Multibranch Pipeline** job pointing at this GitHub repository. Jenkins will pick up the root `Jenkinsfile`.
+5. GitHub webhooks cannot reach a laptop `localhost`. For demo, click **Build Now** or enable periodic branch scan. If Jenkins is publicly reachable: `http://<jenkins-host>:8080/github-webhook/`.
+6. Use feature branches and Pull Requests. Jenkins validates the PR. Merge to `main` only after the build is green. Deployment runs on `main` / `master` only. The live app is **http://localhost:3000**.
 
 Pipeline stages:
 
