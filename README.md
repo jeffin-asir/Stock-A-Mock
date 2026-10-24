@@ -68,11 +68,7 @@ docker compose -p stock-cd -f docker-compose.yml up -d --build
 
 Open http://localhost:3000
 
-This deploy uses a mock stock API on port `5001` so the demo works without Oracle. To start the real backend as well (Oracle required):
-
-```bash
-docker compose --profile oracle up -d --build
-```
+The deployed app uses the Express backend on port `5001` and the existing Oracle database at `localhost:1521/XEPDB1`. The frontend on port `3000` is configured to call that backend. The database container and its persistent volume are not part of test cleanup.
 
 ## Jenkins setup
 
@@ -80,8 +76,8 @@ docker compose --profile oracle up -d --build
 2. Install plugins if missing: **Git**, **GitHub**, **GitHub Branch Source**, **Pipeline**, **JUnit**.
 3. The pipeline uses `docker compose` to build, test, and deploy the app, so the OS user that runs Jenkins must be able to run `docker` (on macOS, Docker Desktop running is enough for a typical local Jenkins).
 4. Create a **Multibranch Pipeline** job pointing at this GitHub repository. Jenkins will pick up the root `Jenkinsfile`.
-5. GitHub webhooks cannot reach a laptop `localhost`. For demo, click **Build Now** or enable periodic branch scan. If Jenkins is publicly reachable: `http://<jenkins-host>:8080/github-webhook/`.
-6. Use feature branches and Pull Requests. Jenkins validates the PR. Merge to `main` only after the build is green. Deployment runs on `main` / `master` only. The live app is **http://localhost:3000**.
+5. GitHub webhooks cannot reach a laptop `localhost`. In the Multibranch Pipeline job, enable **Scan Multibranch Pipeline Triggers → Periodically if not otherwise run** and set the interval to **5 minutes**. This discovers branch changes without requiring a public Jenkins endpoint. Pull request discovery and merge protection are controlled by Jenkins and GitHub settings.
+6. Use feature branches and Pull Requests. Deployment runs on `main` / `master` only. The live app is **http://localhost:3000**.
 
 Pipeline stages:
 
@@ -94,4 +90,4 @@ Pipeline stages:
 
 ## API URL
 
-The UI uses `VITE_API_URL` (see `Frontend/src/config.js`). Defaults to `http://localhost:5001`. CI builds the frontend with `http://mock-api:5001` so Selenium inside Docker can reach the mock API.
+The production UI uses `http://localhost:5001` for the Oracle-backed Express API. The isolated Selenium stack uses the mock API on its internal Docker network and publishes test-only ports `5002` (API) and `3001` (frontend). Jenkins tears this stack down after tests pass or fail; production ports and the Oracle data volume are separate.

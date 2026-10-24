@@ -1,9 +1,11 @@
 const oracledb = require('oracledb');
 require('dotenv').config();
 
-oracledb.initOracleClient({
-  libDir: process.env.DB_LibDir //Use the path for instantclient in your own machine
-});
+// Use Thin mode by default, which needs no Instant Client in the container.
+// Local setups that explicitly provide an Instant Client can opt into Thick mode.
+if (process.env.DB_LibDir) {
+  oracledb.initOracleClient({ libDir: process.env.DB_LibDir });
+}
 
 async function initPool() {
   try {

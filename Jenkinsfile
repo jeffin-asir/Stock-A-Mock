@@ -27,6 +27,7 @@ pipeline {
         sh '''
           mkdir -p reports
           ${TEST_COMPOSE} build
+          ${DEPLOY_COMPOSE} build
         '''
       }
     }
@@ -55,7 +56,7 @@ pipeline {
       }
       steps {
         sh '''
-          ${DEPLOY_COMPOSE} up -d --build
+          ${DEPLOY_COMPOSE} up -d --no-build --remove-orphans
           ${DEPLOY_COMPOSE} ps
         '''
       }

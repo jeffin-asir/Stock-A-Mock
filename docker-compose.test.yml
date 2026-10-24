@@ -13,6 +13,8 @@ services:
       interval: 5s
       timeout: 3s
       retries: 10
+    ports:
+      - "5002:5001"
 
   frontend:
     build:
@@ -22,6 +24,8 @@ services:
     depends_on:
       mock-api:
         condition: service_healthy
+    ports:
+      - "3001:80"
     healthcheck:
       test: ["CMD", "wget", "-qO-", "http://127.0.0.1/"]
       interval: 5s
