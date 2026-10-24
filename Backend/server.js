@@ -3,6 +3,10 @@ const cors = require('cors');
 const oracledb = require('oracledb');
 const dotenv = require('dotenv');
 require('dotenv').config();
+// Local mini-project fallbacks; environment variables take precedence.
+process.env.DB_USER ||= "Stock";
+process.env.DB_PASSWORD ||= "StockMock";
+process.env.JWT_SECRET ||= "ithinkthatkidmightbetheavatar";
 
 const app = express();
 const db = require('./connection/db'); // Import your DB module
