@@ -61,7 +61,7 @@ const Buy = () => {
 
       alert('Stock bought Successfully!');
       setMessage(`Bought ${qty} of ${stock.symbol}`);
-      //setMessage('Buy failed (demo)');
+      setMessage('Buy failed (demo)');
       setQuantities({ ...quantities, [stock.symbol]: 0 });
     } catch (err) {
       console.error(err);
